@@ -13,11 +13,28 @@ There is currently no built-in integration between Bitbucket and Google Cloud Bu
 
 `bitbucket-build-status` provides a Google Cloud Function to perform this last step. Cloud Build sends events detailing progress of a build to  the `cloud-builds` Google PubSub topic. The Cloud Function subscribes to the topic, and propagates these events to Bitbucket, resulting an [icon against the commit or the pull request](https://confluence.atlassian.com/bitbucket/integrate-your-build-system-with-bitbucket-cloud-790790968.html) showing whether the build is progressing, or has succeeded or failed, along with a link to the relevant Cloud Build build logs.
 
+## Design
+
+I've done my best to design the function according to best practices:
+
+* Lazily load and reuse computationally expensive code paths
+* Assign it permissions according to principle of least privilege
+* Encrypt credentials, and decrypt only on first use
+* Unit tested (although no integration tests)
+
+I got a lot of help from reading Seth Vargo's [Secrets in Serverless blog post](https://www.sethvargo.com/secrets-in-serverless). In choosing to both encrypt the credentials with KMS, and store the ciphertext on cloud storage (and having the function retrieve and decrypt them at run-time), the credentials can be rotated at any time without having to re-deploy the function.
+
 ## Installation
 
-### Mirror Repository
+### Setup Cloud Build
 
-Mirror your Bitbucket repository to Cloud Source Repositories by following [these instructions](https://cloud.google.com/source-repositories/docs/mirroring-a-bitbucket-repository). Make a note of the Google Cloud project you use for the mirror. From hereon in, all resources are configured in the context of this project.
+Follow these [instructions](https://cloud.google.com/cloud-build/docs/running-builds/automate-builds). Once you've done so, you'll have:
+
+  * A Bitbucket repository mirrored to Cloud Source Repositories
+  * A Cloud Build config file (e.g. `cloudbuild.yaml`) in the repository
+  * A Cloud Build trigger to run a build when a commit is pushed
+  
+Make a note of the Google Cloud project you decide to use. From hereon in, all resources are configured in the context of this project.
 
 ### Setup Bitbucket Credentials
 
