@@ -17,9 +17,9 @@ There is currently no built-in integration between Bitbucket and Google Cloud Bu
 
 I've done my best to design the function according to best practices:
 
-* Lazily load and reuse computationally expensive code paths
 * Assign it permissions according to principle of least privilege
-* Encrypt credentials, and decrypt only on first use
+* Lazily load and reuse computationally expensive code paths
+* Keep credentials encrypted, and decrypt only on first use
 * Unit tested (although no integration tests)
 
 I got a lot of help from reading Seth Vargo's [Secrets in Serverless blog post](https://www.sethvargo.com/secrets-in-serverless). In choosing to both encrypt the credentials with KMS and store the resulting ciphertext on cloud storage (and having the function retrieve and decrypt them at run-time), the credentials can be rotated at any time without having to re-deploy the function.
