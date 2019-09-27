@@ -97,11 +97,10 @@ echo '{"username": "bb_user", "password": "*******"}' | \
   --key=build-status \
   --ciphertext-file=- \
   --plaintext-file=- | \
-  base64 | \
   gsutil cp - gs://bb-secrets/build-status
 ```
 
-Note: this step can be repeated whenever you want to rotate the credentials.
+Note: this step can be repeated whenever you want to rotate the credentials. You'll need to re-grant the permissions below on the bucket object too (because uploading a new object overwrites the object's permissions too).
 
 ### Configure IAM
 
@@ -138,7 +137,7 @@ The function now has the permissions to both read the ciphertext from the bucket
 Deploy the function. Be sure to replace `${GOOGLE_CLOUD_PROJECT}` with your project name.
 
 ```bash
-$ gcloud functions deploy bitbucket-build-status \
+gcloud functions deploy bitbucket-build-status \
     --source . \
     --runtime python37 \
     --entry-point build_status \
@@ -149,4 +148,10 @@ $ gcloud functions deploy bitbucket-build-status \
 
 ## Test
 
-Everything is now in place. To test that it's working, push a commit to the Bitbucket repository and confirm that a build status icon appears next to the commit.
+Call the function with the test event found in this repository:
+
+```bash
+gcloud functions call bitbucket-build-status --data "{\"data\": \"$(base64 tests/event_data.json | tr -d '\n')\"}"
+```
+
+If that succeeds with `result: OK`, then go ahead and commit to the Bitbucket repository and confirm that a build status icon appears next to the commit.
