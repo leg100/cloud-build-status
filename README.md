@@ -31,7 +31,7 @@ Keep a note of the username and password for later.
 
 ### Enable Google Cloud APIs
 
-If you have not previously used Cloud Functions, KMS, or Cloud Storage, enable the APIs on your Google Cloud Project:
+If you have not previously used Cloud Functions, Cloud KMS, or Cloud Storage, enable the APIs on your Google Cloud Project:
 
 ```bash
 gcloud services enable \
