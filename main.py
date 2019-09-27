@@ -20,9 +20,10 @@ def get_encrypted_creds(bucket, obj):
 def decrypt(crypto_key_id, ciphertext):
     response = kms_v1 \
         .KeyManagementServiceClient() \
-        .decrypt(crypto_key_id, ciphertext)
-
-    return base64.b64decode(response['plaintext']).decode('utf-8').strip()
+        .decrypt(crypto_key_id, ciphertext) \
+        .plaintext \
+        .decode('utf-8') \
+        .strip()
 
 
 def bb_req(url, username, password, payload):
