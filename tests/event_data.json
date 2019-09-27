@@ -1,0 +1,111 @@
+{
+  "id": "aeccd2ef-f51a-4a44-8e2e-0de2609ce367",
+  "projectId": "louis-garman-ci",
+  "status": "SUCCESS",
+  "source": {
+    "repoSource": {
+      "projectId": "louis-garman-ci",
+      "repoName": "bitbucket_garman_webapp",
+      "branchName": "feature/fish"
+    }
+  },
+  "steps": [
+    {
+      "name": "python:3.7-slim",
+      "args": [
+        "-c",
+        "pip install flask && python test_app.py -v"
+      ],
+      "id": "Test",
+      "entrypoint": "/bin/sh",
+      "timing": {
+        "startTime": "2019-08-23T20:53:38.925470322Z",
+        "endTime": "2019-08-23T20:53:52.451515586Z"
+      },
+      "pullTiming": {
+        "startTime": "2019-08-23T20:53:38.925470322Z",
+        "endTime": "2019-08-23T20:53:48.690916073Z"
+      },
+      "status": "SUCCESS"
+    },
+    {
+      "name": "gcr.io/cloud-builders/docker",
+      "args": [
+        "build",
+        "-t",
+        "gcr.io/louis-garman-ci/hello-cloudbuild:65ca6a9",
+        "."
+      ],
+      "id": "Build",
+      "timing": {
+        "startTime": "2019-08-23T20:53:52.451629267Z",
+        "endTime": "2019-08-23T20:53:58.347258288Z"
+      },
+      "pullTiming": {
+        "startTime": "2019-08-23T20:53:52.451629267Z",
+        "endTime": "2019-08-23T20:53:52.511850044Z"
+      },
+      "status": "SUCCESS"
+    }
+  ],
+  "results": {
+    "images": [
+      {
+        "name": "gcr.io/louis-garman-ci/hello-cloudbuild:65ca6a9",
+        "digest": "sha256:86ffa960bfe3dc0b28262d6bb1bf13c3878326509ad2cf3a705da752495854c0",
+        "pushTiming": {
+          "startTime": "2019-08-23T20:53:58.972880742Z",
+          "endTime": "2019-08-23T20:54:04.111129792Z"
+        }
+      }
+    ],
+    "buildStepImages": [
+      "",
+      "sha256:f7e685514163b3ff8fffb47c408b8ec55c83f005a97e8368b4e809ebbe41ff04"
+    ],
+    "buildStepOutputs": []
+  },
+  "createTime": "2019-08-23T20:53:30.803385011Z",
+  "startTime": "2019-08-23T20:53:33.412334804Z",
+  "finishTime": "2019-08-23T20:54:04.991082Z",
+  "timeout": "600s",
+  "images": [
+    "gcr.io/louis-garman-ci/hello-cloudbuild:65ca6a9"
+  ],
+  "artifacts": {
+    "images": [
+      "gcr.io/louis-garman-ci/hello-cloudbuild:65ca6a9"
+    ]
+  },
+  "logsBucket": "gs://292927648743.cloudbuild-logs.googleusercontent.com",
+  "sourceProvenance": {
+    "resolvedRepoSource": {
+      "projectId": "louis-garman-ci",
+      "repoName": "bitbucket_garman_webapp",
+      "commitSha": "65ca6a99a2573f0f1ff5dc93f78a77966248ea2d"
+    }
+  },
+  "buildTriggerId": "2bceb582-3141-44bf-b444-5640cbcaecc5",
+  "options": {
+    "substitutionOption": "ALLOW_LOOSE",
+    "logging": "LEGACY"
+  },
+  "logUrl": "https://console.cloud.google.com/gcr/builds/aeccd2ef-f51a-4a44-8e2e-0de2609ce367?project=292927648743",
+  "tags": [
+    "trigger-2bceb582-3141-44bf-b444-5640cbcaecc5"
+  ],
+  "timing": {
+    "BUILD": {
+      "startTime": "2019-08-23T20:53:38.925427678Z",
+      "endTime": "2019-08-23T20:53:58.972846686Z"
+    },
+    "FETCHSOURCE": {
+      "startTime": "2019-08-23T20:53:35.017461740Z",
+      "endTime": "2019-08-23T20:53:38.844879866Z"
+    },
+    "PUSH": {
+      "startTime": "2019-08-23T20:53:58.972880151Z",
+      "endTime": "2019-08-23T20:54:04.111164045Z"
+    }
+  }
+}

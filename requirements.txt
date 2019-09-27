@@ -1,0 +1,3 @@
+google-cloud-kms
+google-cloud-storage
+requests
