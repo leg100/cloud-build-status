@@ -125,7 +125,7 @@ gcloud kms keys add-iam-policy-binding build-status \
 
 The function now has the permissions to both read the ciphertext from the bucket as well as to decrypt the ciphertext.
 
-### Deploy
+## Deploy
 
 Deploy the function. Be sure to replace `${GOOGLE_CLOUD_PROJECT}` with your project name.
 
@@ -139,6 +139,6 @@ $ gcloud beta functions deploy encrypted-envvars \
     --trigger-topic=cloud-builds
 ```
 
-### Test
+## Test
 
 Everything is now in place. To test that it's working, push a commit to the Bitbucket repository and confirm that a build status icon appears next to the commit.
