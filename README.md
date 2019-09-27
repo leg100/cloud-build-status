@@ -151,7 +151,8 @@ gcloud functions deploy bitbucket-build-status \
 Call the function with the test event found in this repository:
 
 ```bash
-gcloud functions call bitbucket-build-status --data "{\"data\": \"$(base64 tests/event_data.json | tr -d '\n')\"}"
+data=$(cat tests/event_data.json | jq '@base64 | {"data": . }' -r)
+gcloud functions call bitbucket-build-status --data "$data"
 ```
 
 If that succeeds with `result: OK`, then go ahead and commit to the Bitbucket repository and confirm that a build status icon appears next to the commit.
