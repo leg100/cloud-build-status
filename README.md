@@ -143,7 +143,7 @@ $ gcloud functions deploy bitbucket-build-status \
     --runtime python37 \
     --entry-point build_status \
     --service-account bitbucket-build-status@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
-    --set-env-vars KMS_CRYPTO_KEY_ID=projects/${GOOGLE_CLOUD_PROJECT}/locations/global/keyRings/bb-secrets/cryptoKeys/bb-secrets,SECRETS_BUCKET=bb-secrets,SECRETS_OBJECT=build-status \
+    --set-env-vars KMS_CRYPTO_KEY_ID=projects/${GOOGLE_CLOUD_PROJECT}/locations/global/keyRings/bb-secrets/cryptoKeys/build-status,SECRETS_BUCKET=bb-secrets,SECRETS_OBJECT=build-status \
     --trigger-topic=cloud-builds
 ```
 
