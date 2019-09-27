@@ -53,7 +53,7 @@ If you have not previously used Cloud Functions, Cloud KMS, or Cloud Storage, en
 ```bash
 gcloud services enable \
   cloudfunctions.googleapis.com \
-  kms.googleapis.com \
+  cloudkms.googleapis.com \
   storage-component.googleapis.com
 ```
 
@@ -78,6 +78,13 @@ Create Google Cloud Storage bucket in which to store encrypted credentials (the 
 gsutil mb gs://bb-secrets/
 ```
 
+Next, change the default bucket permissions. By default, anyone with access to the project has access to the data in the bucket. You must do this before storing any data in the bucket!
+
+```bash
+gsutil defacl set private gs://bb-secrets
+gsutil acl set -r private private gs://bb-secrets
+```
+
 ### Upload Credentials
 
 Encrypt the username and app password you created earlier, and upload the resulting ciphertext to the bucket:
@@ -89,7 +96,8 @@ echo '{"username": "bb_user", "password": "*******"}' | \
   --keyring=bb-secrets \
   --key=build-status \
   --ciphertext-file=- \
-  --plaintext-file=- |
+  --plaintext-file=- | \
+  base64 | \
   gsutil cp - gs://bb-secrets/build-status
 ```
 
@@ -100,16 +108,16 @@ Note: this step can be repeated whenever you want to rotate the credentials.
 Create a new service account for use by the Cloud Function:
 
 ```bash
-gcloud iam service-accounts create bb-kms-decrypter
+gcloud iam service-accounts create bitbucket-build-status
 ```
 
 Grant permissions to read the ciphertext from the bucket. Be sure to replace `${GOOGLE_CLOUD_PROJECT}` with your project name:
 
 ```bash
-gsutil iam ch serviceAccount:bb-kms-decrypter@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com:legacyBucketReader \
+gsutil iam ch serviceAccount:bitbucket-build-status@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com:legacyBucketReader \
     gs://bb-secrets
 
-gsutil iam ch serviceAccount:bb-kms-decrypter@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com:legacyObjectReader \
+gsutil iam ch serviceAccount:bitbucket-build-status@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com:legacyObjectReader \
     gs://bb-secrets/build-status
 ```
 
@@ -119,7 +127,7 @@ Grant the most minimal set of permissions to decrypt data using the KMS key crea
 gcloud kms keys add-iam-policy-binding build-status \
     --location global \
     --keyring bb-secrets \
-    --member "serviceAccount:bb-kms-decrypter@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com" \
+    --member "serviceAccount:bitbucket-build-status@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com" \
     --role roles/cloudkms.cryptoKeyDecrypter
 ```
 
@@ -130,11 +138,11 @@ The function now has the permissions to both read the ciphertext from the bucket
 Deploy the function. Be sure to replace `${GOOGLE_CLOUD_PROJECT}` with your project name.
 
 ```bash
-$ gcloud beta functions deploy encrypted-envvars \
-    --source ./python \
+$ gcloud functions deploy bitbucket-build-status \
+    --source . \
     --runtime python37 \
     --entry-point build_status \
-    --service-account bb-kms-decrypter@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
+    --service-account bitbucket-build-status@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
     --set-env-vars KMS_CRYPTO_KEY_ID=projects/${GOOGLE_CLOUD_PROJECT}/locations/global/keyRings/bb-secrets/cryptoKeys/bb-secrets,SECRETS_BUCKET=bb-secrets,SECRETS_OBJECT=build-status \
     --trigger-topic=cloud-builds
 ```
