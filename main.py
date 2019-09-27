@@ -18,7 +18,7 @@ def get_encrypted_creds(bucket, obj):
 
 
 def decrypt(crypto_key_id, ciphertext):
-    response = kms_v1 \
+    return kms_v1 \
         .KeyManagementServiceClient() \
         .decrypt(crypto_key_id, ciphertext) \
         .plaintext \
