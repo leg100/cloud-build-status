@@ -5,8 +5,7 @@ from google.cloud import kms_v1, storage
 
 
 encrypted_creds = None
-username = None
-password = None
+creds = None
 
 
 def get_encrypted_creds(bucket, obj):
@@ -57,18 +56,13 @@ def build_status(event, context):
     secrets_obj = os.environ['SECRETS_OBJECT']
     crypto_key_id = os.environ['KMS_CRYPTO_KEY_ID']
 
-    global encrypted_creds, username, password
+    global encrypted_creds, creds
 
     if not encrypted_creds:
-        json_string = get_encrypted_creds(secrets_bucket, secrets_obj)
-        encrypted_creds = json.loads(json_string)
+        encrypted_creds = get_encrypted_creds(secrets_bucket, secrets_obj)
 
-    if not username:
-        username = decrypt(crypto_key_id, encrypted_creds['username'])
-
-    if not password:
-        password = decrypt(crypto_key_id, encrypted_creds['password'])
-
+    if not creds:
+        creds = json.loads(decrypt(crypto_key_id, encrypted_creds))
 
     data = base64.b64decode(event['data']).decode('utf-8')
     msg = json.loads(data)
@@ -97,4 +91,6 @@ def build_status(event, context):
 
     api_url = build_url(bb_user, bb_repo, commit_sha)
 
-    return bb_req(api_url, username, password, payload) == 200
+    resp = bb_req(api_url, creds['username'], creds['password'], payload)
+
+    return resp == 200
