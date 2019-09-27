@@ -93,6 +93,8 @@ echo '{"username": "bb_user", "password": "*******"}' | \
   gsutil cp - gs://bb-secrets/build-status
 ```
 
+Note: this step can be repeated whenever you want to rotate the credentials.
+
 ### Configure IAM
 
 Create a new service account for use by the Cloud Function:
