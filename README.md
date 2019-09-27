@@ -15,15 +15,32 @@ There is currently no built-in integration between Bitbucket and Google Cloud Bu
 
 ## Installation
 
-Mirror your Bitbucket repository to Cloud Source Repositories by following [these instructions](https://cloud.google.com/source-repositories/docs/mirroring-a-bitbucket-repository).
+### Mirror Repository
 
-If you have not previously used cloud functions or cloud storage, enable the APIs:
+Mirror your Bitbucket repository to Cloud Source Repositories by following [these instructions](https://cloud.google.com/source-repositories/docs/mirroring-a-bitbucket-repository). Make a note of the Google Cloud project you use for the mirror. From hereon in, all resources are configured in the context of this project.
+
+### Setup Bitbucket Credentials
+
+Nominate a Bitbucket account for Cloud Function to authenticate with the Bitbucket API. This need not be the same account as that used for mirroring the repository in the previous step.
+
+Create an [app password](https://confluence.atlassian.com/bitbucket/app-passwords-828781300.html) for that account.
+
+Assign to the app password the `repository:write` scope. (I think this is the minimum necessary permission for Bitbucket to update the build status...).
+
+Keep a note of the username and password for later.
+
+### Enable Google Cloud APIs
+
+If you have not previously used Cloud Functions, KMS, or Cloud Storage, enable the APIs on your Google Cloud Project:
 
 ```bash
 gcloud services enable \
   cloudfunctions.googleapis.com \
+  kms.googleapis.com \
   storage-component.googleapis.com
 ```
+
+### Create KMS keys
 
 Create KMS keyring and key:
 
@@ -36,13 +53,17 @@ gcloud kms keys create build-status \
   --purpose encryption
 ```
 
-Create bucket in which to store encrypted credentials (the ciphertext):
+### Create Storage Bucket
+
+Create Google Cloud Storage bucket in which to store encrypted credentials (the ciphertext):
 
 ```bash
 gsutil mb gs://bb-secrets/
 ```
 
-Encrypt your credentials and upload the ciphertext to the GCS bucket:
+### Upload Credentials
+
+Encrypt the username and app password you created earlier, and upload the resulting ciphertext to the bucket:
 
 ```bash
 echo '{"username": "bb_user", "password": "*******"}' | \
@@ -55,13 +76,15 @@ echo '{"username": "bb_user", "password": "*******"}' | \
   gsutil cp - gs://bb-secrets/build-status
 ```
 
-Create a new service account:
+### Configure IAM
+
+Create a new service account for use by the Cloud Function:
 
 ```bash
 gcloud iam service-accounts create bb-kms-decrypter
 ```
 
-Grant permissions to read the ciphertext from the bucket. Be sure to replace `GOOGLE_CLOUD_PROJECT` with your project name:
+Grant permissions to read the ciphertext from the bucket. Be sure to replace `${GOOGLE_CLOUD_PROJECT}` with your project name:
 
 ```bash
 gsutil iam ch serviceAccount:bb-kms-decrypter@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com:legacyBucketReader \
@@ -71,7 +94,7 @@ gsutil iam ch serviceAccount:bb-kms-decrypter@${GOOGLE_CLOUD_PROJECT}.iam.gservi
     gs://bb-secrets/build-status
 ```
 
-Grant the most minimal set of permissions to decrypt data using the KMS key created above. Be sure to replace `GOOGLE_CLOUD_PROJECT` with your project name.
+Grant the most minimal set of permissions to decrypt data using the KMS key created above. Be sure to replace `${GOOGLE_CLOUD_PROJECT}` with your project name.
 
 ```bash
 gcloud kms keys add-iam-policy-binding build-status \
@@ -81,7 +104,11 @@ gcloud kms keys add-iam-policy-binding build-status \
     --role roles/cloudkms.cryptoKeyDecrypter
 ```
 
-Deploy the function. Be sure to replace `GOOGLE_CLOUD_PROJECT` with your project name.
+The function now has the permissions to both read the ciphertext from the bucket as well as to decrypt the ciphertext.
+
+### Deploy
+
+Deploy the function. Be sure to replace `${GOOGLE_CLOUD_PROJECT}` with your project name.
 
 ```bash
 $ gcloud beta functions deploy encrypted-envvars \
@@ -92,3 +119,7 @@ $ gcloud beta functions deploy encrypted-envvars \
     --set-env-vars KMS_CRYPTO_KEY_ID=projects/${GOOGLE_CLOUD_PROJECT}/locations/global/keyRings/bb-secrets/cryptoKeys/bb-secrets,SECRETS_BUCKET=bb-secrets,SECRETS_OBJECT=build-status \
     --trigger-topic=cloud-builds
 ```
+
+### Test
+
+Everything is now in place. To test that it's working, push a commit to the Bitbucket repository and confirm that a build status icon appears next to the commit.
