@@ -1,3 +1,4 @@
 .direnv/
 .envrc
+.git/
 .pytest_cache/
