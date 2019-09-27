@@ -1,5 +1,7 @@
+import base64
 import json
 import os
+import requests
 
 from google.cloud import kms_v1, storage
 
@@ -49,8 +51,6 @@ def build_status(event, context):
          metadata. The `event_id` field contains the Pub/Sub message ID. The
          `timestamp` field contains the publish time.
     """
-    import base64
-    import requests
 
     secrets_bucket = os.environ['SECRETS_BUCKET']
     secrets_obj = os.environ['SECRETS_OBJECT']
