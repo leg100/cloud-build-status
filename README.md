@@ -80,7 +80,6 @@ Next, change the default bucket permissions. By default, anyone with access to t
 
 ```bash
 gsutil defacl set private gs://bb-secrets
-gsutil acl set -r private private gs://bb-secrets
 ```
 
 ### Upload Credentials
