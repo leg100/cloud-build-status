@@ -164,7 +164,7 @@ Then run:
 bats tests/integration.bats
 ```
 
-If they pass you should output like the following:
+If they pass you should see output like the following:
 
 ```bash
  ✓ in progress
