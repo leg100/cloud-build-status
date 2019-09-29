@@ -42,7 +42,7 @@ Nominate a Bitbucket account for Cloud Function to authenticate with the Bitbuck
 
 Create an [app password](https://confluence.atlassian.com/bitbucket/app-passwords-828781300.html) for that account.
 
-Assign to the app password the `repository:write` scope. (I think this is the minimum necessary permission for Bitbucket to update the build status...).
+Assign to the app password the `repository:read` scope.
 
 Keep a note of the username and password for later.
 
