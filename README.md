@@ -11,7 +11,7 @@ Update Bitbucket build status with the results of a Google Cloud Build pipeline.
 
 There is no built-in end-to-end integration between Bitbucket and Google Cloud Build. Google Cloud *does* provide for mirroring a Bitbucket repository to a Google Cloud Source Repository. And then a Cloud Build trigger can be configured to run a build whenever commits are pushed. However, there is no built-in support for reporting the build status back to the Bitbucket repository. 
 
-`bitbucket-build-status` provides a Google Cloud Function to perform this last step. Cloud Build sends events detailing progress of a build to  the `cloud-builds` Google PubSub topic. The Cloud Function subscribes to the topic, and propagates these events to Bitbucket, resulting an [icon against the commit or the pull request](https://confluence.atlassian.com/bitbucket/integrate-your-build-system-with-bitbucket-cloud-790790968.html) showing whether the build is progressing, or has succeeded or failed, along with a link to the relevant Cloud Build build logs.
+`bitbucket-build-status` provides a Google Cloud Function to perform this last step. Cloud Build sends events detailing progress of a build to  the `cloud-builds` Google PubSub topic. The Cloud Function subscribes to the topic, and propagates these events to Bitbucket, resulting in an [icon against the commit or the pull request](https://confluence.atlassian.com/bitbucket/integrate-your-build-system-with-bitbucket-cloud-790790968.html) showing whether the build is progressing, or has succeeded or failed, along with a link to the relevant Cloud Build build logs.
 
 ## Design
 
