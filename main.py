@@ -94,4 +94,7 @@ def build_status(event, context):
 
     resp = bb_req(api_url, creds['username'], creds['password'], payload)
 
-    return resp == 200
+    if resp != 200:
+        raise RuntimeError(f"HTTP {resp} response from POST {api_url}")
+
+    return "OK"
