@@ -18,14 +18,16 @@ def env_vars(monkeypatch):
     monkeypatch.setenv('KMS_CRYPTO_KEY_ID',
             'projects/my-project/locations/global/keyRings/secrets/cryptoKeys/bitbucket')
 
-
-def test_func(event, env_vars, mocker):
+@pytest.fixture
+def patches(mocker):
     mocker.patch('main.get_encrypted_creds', return_value='FALKJFLKN')
     mocker.patch('main.decrypt',
             return_value='{"username":"lg", "password":"12345678"}')
     mocker.patch('main.bb_req', return_value=200)
 
-    assert main.build_status(event, None)
+
+def test_func(event, env_vars, patches):
+    assert main.build_status(event, None) == "OK"
 
     main.get_encrypted_creds.assert_called_once_with(
             'my-secrets-bucket',
@@ -36,12 +38,8 @@ def test_func(event, env_vars, mocker):
         'FALKJFLKN')
 
 
-def test_func_second_invocation(event, env_vars, mocker):
-    mocker.patch('main.get_encrypted_creds')
-    mocker.patch('main.decrypt')
-    mocker.patch('main.bb_req', return_value=200)
-
-    assert main.build_status(event, None)
+def test_func_second_invocation(event, env_vars, patches):
+    assert main.build_status(event, None) == "OK"
 
     main.get_encrypted_creds.assert_not_called()
     main.decrypt.assert_not_called()
@@ -57,3 +55,10 @@ def test_func_second_invocation(event, env_vars, mocker):
             'url': 'https://console.cloud.google.com/gcr/builds/aeccd2ef-f51a-4a44-8e2e-0de2609ce367?project=292927648743',
             'key': '2bceb582-3141-44bf-b444-5640cbcaecc5'
         })
+
+
+def test_func_bad_response(event, env_vars, mocker, patches):
+    mocker.patch('main.bb_req', return_value=404)
+
+    with pytest.raises(RuntimeError, match="404"):
+        main.build_status(event, None)
