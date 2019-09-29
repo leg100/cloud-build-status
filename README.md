@@ -20,7 +20,7 @@ I've done my best to design the function according to best practices:
 * Assign it permissions according to principle of least privilege
 * Lazily load and reuse computationally expensive code paths
 * Keep credentials encrypted, and decrypt only on first use
-* Unit tested (although no integration tests)
+* Unit and integration tests
 
 I got a lot of help from reading Seth Vargo's [Secrets in Serverless blog post](https://www.sethvargo.com/secrets-in-serverless). In choosing to both encrypt the credentials with KMS and store the resulting ciphertext on cloud storage (and having the function retrieve and decrypt them at run-time), the credentials can be rotated at any time without having to re-deploy the function.
 
@@ -148,11 +148,34 @@ gcloud functions deploy bitbucket-build-status \
 
 ## Test
 
-Call the function with the test event found in this repository:
+[Bats](https://github.com/sstephenson/bats) is used for running integration tests against a deployed function.
+
+Ensure the following environment variables are set accordingly first:
+
+* `BB_REPO`: the name of an existing Bitbucket repository
+* `BB_REPO_OWNER`: the owner of an existing Bitbucket repository
+* `BB_COMMIT_SHA`: an existing commit against which to set and test build statuses
+* `BB_USERNAME`: Bitbucket username for API authentication
+* `BB_PASSWORD`: Bitbucket (app) password for API authentication
+
+Then run:
 
 ```bash
-data=$(cat tests/event_data.json | jq '@base64 | {"data": . }' -r)
-gcloud functions call bitbucket-build-status --data "$data"
+bats tests/integration.bats
 ```
 
-If that succeeds with `result: OK`, then go ahead and commit to the Bitbucket repository and confirm that a build status icon appears next to the commit.
+If they pass you should output like the following:
+
+```bash
+ ✓ in progress
+ ✓ success
+ ✓ failure
+
+3 tests, 0 failures
+```
+
+## TODO
+
+### Cloud Build Badge
+
+* to indicate unit tests are passing
