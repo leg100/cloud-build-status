@@ -40,9 +40,7 @@ Make a note of the Google Cloud project you decide to use. From hereon in, all r
 
 Nominate a Bitbucket account for Cloud Function to authenticate with the Bitbucket API. This need not be the same account as that used for mirroring the repository in the previous step.
 
-Create an [app password](https://confluence.atlassian.com/bitbucket/app-passwords-828781300.html) for that account.
-
-Assign to the app password the `repository:read` scope.
+Create an [app password](https://confluence.atlassian.com/bitbucket/app-passwords-828781300.html) for that account. Assign it the `repository:read` scope.
 
 Keep a note of the username and password for later.
 
