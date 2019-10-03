@@ -1,4 +1,4 @@
-from cloud_build_status.event import Event
+from cloud_build_status.event import Event, IrrelevantEvent
 from cloud_build_status.provider import Provider
 
 
@@ -10,8 +10,13 @@ def build_status(event, context):
     pubsub messages from Google Cloud Build.
     """
 
-    event = Event(event)
-    provider = Provider.create_from_event(event)
-    provider.send_status()
+    try:
+        event = Event(event)
+        provider = Provider.create_from_event(event)
+    except IrrelevantEvent:
+        print(RuntimeError('Ignoring Cloud Build event because ' \
+                'it is not related to a mirrored repository'))
+    else:
+        provider.send_status()
 
     return "OK"

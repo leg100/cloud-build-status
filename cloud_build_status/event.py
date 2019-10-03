@@ -2,6 +2,10 @@ import base64
 import json
 
 
+class IrrelevantEvent(Exception):
+    pass
+
+
 class Event:
     def __init__(self, event):
         decoded = base64.b64decode(event['data']).decode('utf-8')
@@ -14,13 +18,21 @@ class Event:
 
 
     @property
+    def resolved_repo_source(self):
+        try:
+            return self.data['sourceProvenance']['resolvedRepoSource']
+        except KeyError:
+            raise IrrelevantEvent
+
+
+    @property
     def commit(self):
-        return self.data['sourceProvenance']['resolvedRepoSource']['commitSha']
+        return self.resolved_repo_source['commitSha']
 
 
     @property
     def mirror(self):
-        return self.data['sourceProvenance']['resolvedRepoSource']['repoName']
+        return self.resolved_repo_source['repoName']
 
 
     @property
