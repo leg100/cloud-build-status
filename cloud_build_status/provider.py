@@ -16,6 +16,8 @@ class Provider:
 
         if resp.status_code not in [200, 201]:
             raise RuntimeError(f"HTTP {resp.status_code} response from POST {self.url}")
+        else:
+            print(f'Sent state {self.event.state} to {self.event.provider}')
 
 
     @property

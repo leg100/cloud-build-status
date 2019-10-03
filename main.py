@@ -16,8 +16,7 @@ def build_status(event, context):
     except IrrelevantEvent:
         print(RuntimeError('Ignoring Cloud Build event because ' \
                 'it is not related to a mirrored repository'))
-        return
     else:
         provider.send_status()
 
-        return f'sent state {event.state} to {event.provider}'
+    return
