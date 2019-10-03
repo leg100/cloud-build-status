@@ -9,7 +9,9 @@ Update Github or Bitbucket build status with the results of a Google Cloud Build
 
 ## Summary
 
-Google Cloud supports [mirroring](https://cloud.google.com/source-repositories/docs/mirroring-repositories) both Github and Bitbucket repositories for the purpose of [automating builds](https://cloud.google.com/cloud-build/docs/running-builds/automate-builds) using Cloud Build. Commits pushed to Github or Bitbucket repositories can then trigger builds to run. However, the progress and success or failure of the build is not reported back to the repository. `cloud-build-status` provides a Google Cloud Function to perform this step.
+Google Cloud supports [mirroring](https://cloud.google.com/source-repositories/docs/mirroring-repositories) both Github and Bitbucket repositories for the purpose of [triggering builds](https://cloud.google.com/cloud-build/docs/running-builds/automate-builds) using Cloud Build. However, Cloud Build does not automatically report the build's status back to the repository. `cloud-build-status` provides a Google Cloud Function to perform this step.
+
+Note: There is now a Github app for Cloud Build, that *does* report a build's status. However, it doesn't mirror the Github repository, and instead retrieves a tarball of the commit to build. There are good reasons to prefer a mirror - Cloud Build events will contain information on the repository (whereas the Github app omits some information, such as the owner of the repository). This might be useful if you're writing Cloud Functions that rely on such information, say to generate a Cloud Build badge for the repository. It's also been found that certain changes to the repository - say, changing the name of the repository - are not picked up by the Github app, and it can take quite a bit of work to remove and re-add the app to reflect the changes. In short, it can be preferable to have fine-grained control of the components that make up your CI/CD pipeline.
 
 ## Design
 
