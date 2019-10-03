@@ -1,0 +1,122 @@
+{
+  "id": "2cb4e143-ae45-45e2-bfa3-55aabe5457ff",
+  "projectId": "louis-garman-ci",
+  "status": "SUCCESS",
+  "source": {
+    "storageSource": {
+      "bucket": "292927648743.cloudbuild-source.googleusercontent.com",
+      "object": "ff7f18ef55982750630698ebffed9469a2d294db-9d56424f-c12b-4f7c-923b-34b9a77fcdaf.tar.gz"
+    }
+  },
+  "steps": [
+    {
+      "name": "python:3.7-slim",
+      "args": [
+        "-c",
+        "pip install flask && python test_app.py -v"
+      ],
+      "id": "Test",
+      "entrypoint": "/bin/sh",
+      "timing": {
+        "startTime": "2019-10-03T13:47:40.802515965Z",
+        "endTime": "2019-10-03T13:47:57.434919911Z"
+      },
+      "pullTiming": {
+        "startTime": "2019-10-03T13:47:40.802515965Z",
+        "endTime": "2019-10-03T13:47:50.130542838Z"
+      },
+      "status": "SUCCESS"
+    },
+    {
+      "name": "gcr.io/cloud-builders/docker",
+      "args": [
+        "build",
+        "-t",
+        "gcr.io/louis-garman-ci/hello-cloudbuild:ff7f18e",
+        "."
+      ],
+      "id": "Build",
+      "timing": {
+        "startTime": "2019-10-03T13:47:57.434985013Z",
+        "endTime": "2019-10-03T13:48:07.965837933Z"
+      },
+      "pullTiming": {
+        "startTime": "2019-10-03T13:47:57.434985013Z",
+        "endTime": "2019-10-03T13:47:57.538650487Z"
+      },
+      "status": "SUCCESS"
+    },
+    {
+      "name": "gcr.io/cloud-builders/docker",
+      "args": [
+        "push",
+        "gcr.io/louis-garman-ci/hello-cloudbuild:ff7f18e"
+      ],
+      "id": "Push",
+      "timing": {
+        "startTime": "2019-10-03T13:48:07.966025309Z",
+        "endTime": "2019-10-03T13:48:15.963098999Z"
+      },
+      "pullTiming": {
+        "startTime": "2019-10-03T13:48:07.966025309Z",
+        "endTime": "2019-10-03T13:48:08.121995438Z"
+      },
+      "status": "SUCCESS"
+    }
+  ],
+  "results": {
+    "buildStepImages": [
+      "",
+      "sha256:c0525aac022b1a92e97f9c6cf4ede4dd82979a9f014f05b2ec8843012a03aa60",
+      "sha256:c0525aac022b1a92e97f9c6cf4ede4dd82979a9f014f05b2ec8843012a03aa60"
+    ]
+  },
+  "createTime": "2019-10-03T13:47:32.883316621Z",
+  "startTime": "2019-10-03T13:47:34.108621794Z",
+  "finishTime": "2019-10-03T13:48:17.686942Z",
+  "timeout": "600s",
+  "logsBucket": "gs://292927648743.cloudbuild-logs.googleusercontent.com",
+  "sourceProvenance": {
+    "resolvedStorageSource": {
+      "bucket": "292927648743.cloudbuild-source.googleusercontent.com",
+      "object": "ff7f18ef55982750630698ebffed9469a2d294db-9d56424f-c12b-4f7c-923b-34b9a77fcdaf.tar.gz",
+      "generation": "1570110452499581"
+    },
+    "fileHashes": {
+      "gs://292927648743.cloudbuild-source.googleusercontent.com/ff7f18ef55982750630698ebffed9469a2d294db-9d56424f-c12b-4f7c-923b-34b9a77fcdaf.tar.gz#1570110452499581": {
+        "fileHash": [
+          {
+            "type": "MD5",
+            "value": "OMUO6Y61EL3jYovyYrEjew=="
+          }
+        ]
+      }
+    }
+  },
+  "buildTriggerId": "616eefa4-24a6-43d9-8831-af956e3f0dd1",
+  "options": {
+    "substitutionOption": "ALLOW_LOOSE",
+    "logging": "LEGACY"
+  },
+  "logUrl": "https://console.cloud.google.com/gcr/builds/2cb4e143-ae45-45e2-bfa3-55aabe5457ff?project=292927648743",
+  "substitutions": {
+    "BRANCH_NAME": "master",
+    "COMMIT_SHA": "ff7f18ef55982750630698ebffed9469a2d294db",
+    "REPO_NAME": "webapp",
+    "REVISION_ID": "ff7f18ef55982750630698ebffed9469a2d294db",
+    "SHORT_SHA": "ff7f18e"
+  },
+  "tags": [
+    "trigger-616eefa4-24a6-43d9-8831-af956e3f0dd1"
+  ],
+  "timing": {
+    "BUILD": {
+      "startTime": "2019-10-03T13:47:40.802464278Z",
+      "endTime": "2019-10-03T13:48:16.082516771Z"
+    },
+    "FETCHSOURCE": {
+      "startTime": "2019-10-03T13:47:35.770616672Z",
+      "endTime": "2019-10-03T13:47:40.692074695Z"
+    }
+  }
+}

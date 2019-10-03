@@ -25,6 +25,13 @@ def bitbucket_event():
 
 
 @pytest.fixture
+def github_app_event():
+    event_json = open('tests/app_event_data.json', 'r').read()
+    encoded = base64.b64encode(event_json.encode())
+    return {'data': encoded}
+
+
+@pytest.fixture
 def env_vars(monkeypatch):
     monkeypatch.setenv('CREDENTIALS_BUCKET', 'my-secrets-bucket')
     monkeypatch.setenv('KMS_CRYPTO_KEY_ID',
@@ -132,3 +139,8 @@ def test_github_invalid_password(github_event, env_vars, mocker, patches):
 
     with pytest.raises(RuntimeError, match="403"):
         main.build_status(github_event, None)
+
+def test_ignore_event(github_app_event, env_vars, mocker, patches):
+    main.build_status(github_app_event, None)
+
+    provider.requests.post.assert_not_called()
