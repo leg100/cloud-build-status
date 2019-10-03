@@ -19,4 +19,4 @@ def build_status(event, context):
     else:
         provider.send_status()
 
-    return "OK"
+    return

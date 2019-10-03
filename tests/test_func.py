@@ -68,7 +68,7 @@ def test_github(github_event, env_vars, mocker, patches):
     mocker.patch('cloud_build_status.credentials.decrypt',
             return_value='{"username":"leg100", "password":"password1"}')
 
-    assert main.build_status(github_event, None) == "OK"
+    main.build_status(github_event, None)
 
     cloud_build_status.credentials.get_ciphertext.assert_called_once_with(
             'my-secrets-bucket',
@@ -94,7 +94,7 @@ def test_bitbucket(bitbucket_event, env_vars, mocker, patches):
     mocker.patch('cloud_build_status.credentials.decrypt',
             return_value='{"username":"lg", "password":"12345678"}')
 
-    assert main.build_status(bitbucket_event, None) == "OK"
+    main.build_status(bitbucket_event, None)
 
     cloud_build_status.credentials.get_ciphertext.assert_called_once_with(
             'my-secrets-bucket',
@@ -117,14 +117,14 @@ def test_bitbucket(bitbucket_event, env_vars, mocker, patches):
 
 
 def test_github_second_invocation(github_event, env_vars, patches):
-    assert main.build_status(github_event, None) == "OK"
+    main.build_status(github_event, None)
 
     cloud_build_status.credentials.get_ciphertext.assert_not_called()
     cloud_build_status.credentials.decrypt.assert_not_called()
 
 
 def test_bitbucket_second_invocation(bitbucket_event, env_vars, patches):
-    assert main.build_status(bitbucket_event, None) == "OK"
+    main.build_status(bitbucket_event, None)
 
     cloud_build_status.credentials.get_ciphertext.assert_not_called()
     cloud_build_status.credentials.decrypt.assert_not_called()
