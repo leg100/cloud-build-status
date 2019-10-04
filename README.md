@@ -13,7 +13,7 @@ Integrate your repository's status checks with Google Cloud Build.
 
 Google Cloud Build integrates with Github and Bitbucket repositories. When a commit is pushed or a pull request is updated, a build is triggered. However, its status is not reported back to the repository.`cloud-build-status` provides a Google Cloud Function to perform this step. When enabled, you'll see a status icon next to your commits and pull requests.
 
-If you would like a Cloud Build *badge* instead (as seen above) see my [other project](https://github.com/leg100/cloud-build-badge).
+If you would like a Cloud Build *badge* as well (as seen above) see my [other project](https://github.com/leg100/cloud-build-badge).
 
 Note: There is now a Github app for Cloud Build, that *does* report a build's status. However, it doesn't mirror the Github repository to a Google Cloud Source Repository, and instead retrieves a tarball of the commit to build. There are good reasons to prefer a mirror - Cloud Build events will contain information on the repository (whereas the Github app omits some information, such as the owner of the repository). It's also been found that certain changes to the repository - say, changing the name of the repository - are not picked up by the Github app, and it can take quite a bit of work to remove and re-add the app to reflect the changes. In short, it can be preferable to have fine-grained control of the components that make up your CI/CD pipeline.
 
