@@ -186,9 +186,3 @@ Ensure the following environment variables are set first, according to whether y
 * `GITHUB_COMMIT_SHA`: an existing commit against which to set and test build statuses
 * `GITHUB_USERNAME`: Github username for API authentication
 * `GITHUB_PASSWORD`: Github token for API authentication
-
-## TODO
-
-### Cloud Build Badge
-
-* to indicate unit tests are passing
