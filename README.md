@@ -1,5 +1,7 @@
 # cloud-build-status
 
+![Cloud Build](https://storage.googleapis.com/louis-garman-ci-badges/builds/cloud-build-status/master.svg)
+
 Update Github or Bitbucket build status with the results of a Google Cloud Build pipeline.
 
 ## Requirements
