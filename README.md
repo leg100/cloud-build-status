@@ -2,18 +2,20 @@
 
 ![Cloud Build](https://storage.googleapis.com/louis-garman-ci-badges/builds/cloud-build-status/branches/master.svg)
 
-Update Github or Bitbucket build status with the results of a Google Cloud Build pipeline.
+Integrate your repository's status checks with Google Cloud Build.
 
 ## Requirements
 
-* Github or Bitbucket Cloud repository
-* Google Cloud project
+* Github or Bitbucket Cloud
+* Google Cloud
 
 ## Summary
 
-Google Cloud supports [mirroring](https://cloud.google.com/source-repositories/docs/mirroring-repositories) both Github and Bitbucket repositories for the purpose of [triggering builds](https://cloud.google.com/cloud-build/docs/running-builds/automate-builds) using Cloud Build. However, Cloud Build does not automatically report the build's status back to the repository. `cloud-build-status` provides a Google Cloud Function to perform this step.
+Google Cloud Build integrates with Github and Bitbucket repositories. When a commit is pushed or a pull request is updated, a build is triggered. However, its status is not reported back to the repository.`cloud-build-status` provides a Google Cloud Function to perform this step. When enabled, you'll see a status icon next to your commits and pull requests.
 
-Note: There is now a Github app for Cloud Build, that *does* report a build's status. However, it doesn't mirror the Github repository, and instead retrieves a tarball of the commit to build. There are good reasons to prefer a mirror - Cloud Build events will contain information on the repository (whereas the Github app omits some information, such as the owner of the repository). This might be useful if you're writing Cloud Functions that rely on such information, say to generate a Cloud Build badge for the repository. It's also been found that certain changes to the repository - say, changing the name of the repository - are not picked up by the Github app, and it can take quite a bit of work to remove and re-add the app to reflect the changes. In short, it can be preferable to have fine-grained control of the components that make up your CI/CD pipeline.
+If you would like a Cloud Build *badge* instead (as seen above) see my [other project](https://github.com/leg100/cloud-build-badge).
+
+Note: There is now a Github app for Cloud Build, that *does* report a build's status. However, it doesn't mirror the Github repository to a Google Cloud Source Repository, and instead retrieves a tarball of the commit to build. There are good reasons to prefer a mirror - Cloud Build events will contain information on the repository (whereas the Github app omits some information, such as the owner of the repository). It's also been found that certain changes to the repository - say, changing the name of the repository - are not picked up by the Github app, and it can take quite a bit of work to remove and re-add the app to reflect the changes. In short, it can be preferable to have fine-grained control of the components that make up your CI/CD pipeline.
 
 ## Design
 
